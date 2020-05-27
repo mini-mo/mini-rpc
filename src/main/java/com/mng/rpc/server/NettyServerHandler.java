@@ -10,14 +10,19 @@ import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Sharable
 public class NettyServerHandler extends ChannelDuplexHandler {
 
   private NettyServer server;
+  private Map<String, EndpointCtx> endpoints;
 
   public NettyServerHandler(NettyServer server) {
     this.server = server;
@@ -28,6 +33,26 @@ public class NettyServerHandler extends ChannelDuplexHandler {
             new ProviderInvocationHandler(helloService));
     // bridge
     LocalRegistry.getInstance().register(HelloService.class, instance);
+
+    endpoints = new ConcurrentHashMap<>();
+  }
+
+  @Override
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    SocketAddress sa = ctx.channel().remoteAddress();
+    InetSocketAddress isa = (InetSocketAddress) sa;
+    String key = isa.getHostString() + ":" + isa.getPort();
+    endpoints.put(key, new EndpointCtx());
+    super.channelActive(ctx);
+  }
+
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    SocketAddress sa = ctx.channel().remoteAddress();
+    InetSocketAddress isa = (InetSocketAddress) sa;
+    String key = isa.getHostString() + ":" + isa.getPort();
+    endpoints.remove(key);
+    super.channelInactive(ctx);
   }
 
   @Override
@@ -61,6 +86,16 @@ public class NettyServerHandler extends ChannelDuplexHandler {
   private void doCmd(ChannelHandlerContext ctx, String cmd) {
     if (cmd.equals("")) {
       ctx.writeAndFlush(Unpooled.wrappedBuffer("rpc>".getBytes()));
+      return;
+    }
+    if (cmd.equals("history")) {
+      Map<String, String> list = endpoints.get(genKey(ctx)).getInvokeHistory();
+      StringBuilder sb = new StringBuilder();
+      list.forEach((key, val) -> {
+        sb.append(key).append("    ").append(val).append("\r\n");
+      });
+      sb.append("rpc>");
+      ctx.writeAndFlush(Unpooled.wrappedBuffer(sb.toString().getBytes()));
       return;
     }
     if (cmd.startsWith("ls")) {
@@ -102,7 +137,15 @@ public class NettyServerHandler extends ChannelDuplexHandler {
 
       try {
         Object ret = method.invoke(LocalRegistry.getInstance().get(clazz), invoke.args);
-        ctx.writeAndFlush(Unpooled.wrappedBuffer((ret + "\r\nrpc>").getBytes()));
+        String retStr = String.valueOf(ret);
+
+        EndpointCtx endpointCtx = endpoints.get(genKey(ctx));
+        if (endpointCtx == null) {
+          throw new IllegalStateException();
+        }
+        endpointCtx.getInvokeHistory().put(cmd, retStr);
+
+        ctx.writeAndFlush(Unpooled.wrappedBuffer((retStr + "\r\nrpc>").getBytes()));
         return;
       } catch (Exception e) {
         ctx.writeAndFlush(Unpooled.wrappedBuffer("invoke target err\r\nrpc>".getBytes()));
@@ -111,9 +154,9 @@ public class NettyServerHandler extends ChannelDuplexHandler {
     }
   }
 
-  // invoke com.mng.rpc.server.HelloService.hello("Hello %s", "Mini-rpc")
+  // invoke com.mng.rpc.server.HelloService.format("Hello %s", "Mini-rpc")
   // clazz com.mng.rpc.server.HelloService
-  // method hello
+  // method format
   // args String[]{"Hello %s","Mini-rpc"}
   private TextInvoke parseInvoke(String cmd) {
     try {
@@ -159,10 +202,17 @@ public class NettyServerHandler extends ChannelDuplexHandler {
       return null;
     }
   }
-  // invoke com.mng.rpc.server.HelloService.format("Hello %s", "Mini-rpc")
+// invoke com.mng.rpc.server.HelloService.format("Hello %s", "Mini-rpc")
 //  public static void main(String[] args) {
 //    NettyServerHandler handler = new NettyServerHandler(null);
 //    handler
 //        .parseInvoke("invoke com.mng.rpc.server.HelloService.format(\"Hello %s\", \"Mini-rpc\")");
 //  }
+
+  private String genKey(ChannelHandlerContext ctx) {
+    SocketAddress sa = ctx.channel().remoteAddress();
+    InetSocketAddress isa = (InetSocketAddress) sa;
+    String key = isa.getHostString() + ":" + isa.getPort();
+    return key;
+  }
 }
