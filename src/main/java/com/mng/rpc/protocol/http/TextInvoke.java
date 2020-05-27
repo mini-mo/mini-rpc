@@ -1,4 +1,4 @@
-package com.mng.rpc.server;
+package com.mng.rpc.protocol.http;
 
 public class TextInvoke {
 

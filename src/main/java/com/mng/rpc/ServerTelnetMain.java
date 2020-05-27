@@ -1,8 +1,8 @@
 package com.mng.rpc;
 
-import com.mng.rpc.server.NettyServer;
+import com.mng.rpc.protocol.telnet.NettyServer;
 
-public class ServerMain {
+public class ServerTelnetMain {
 
   public static void main(String[] args) {
 

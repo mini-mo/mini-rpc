@@ -1,6 +1,10 @@
-package com.mng.rpc.server;
+package com.mng.rpc.protocol.telnet;
 
-import com.mng.rpc.Main;
+import com.mng.rpc.ClientTelnetMain;
+import com.mng.rpc.server.HelloService;
+import com.mng.rpc.server.HelloServiceImpl;
+import com.mng.rpc.server.LocalRegistry;
+import com.mng.rpc.server.ProviderInvocationHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
@@ -29,7 +33,7 @@ public class NettyServerHandler extends ChannelDuplexHandler {
     HelloService helloService = new HelloServiceImpl();
 
     Object instance = Proxy
-        .newProxyInstance(Main.class.getClassLoader(), new Class[]{HelloService.class},
+        .newProxyInstance(ClientTelnetMain.class.getClassLoader(), new Class[]{HelloService.class},
             new ProviderInvocationHandler(helloService));
     // bridge
     LocalRegistry.getInstance().register(HelloService.class, instance);

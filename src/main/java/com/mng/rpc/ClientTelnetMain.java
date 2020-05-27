@@ -4,7 +4,7 @@ import com.mng.rpc.client.NettyClient;
 import io.netty.buffer.Unpooled;
 import java.util.Scanner;
 
-public class Main {
+public class ClientTelnetMain {
 
   public static void main(String[] args) throws Throwable {
     ClientThread thread = new ClientThread();

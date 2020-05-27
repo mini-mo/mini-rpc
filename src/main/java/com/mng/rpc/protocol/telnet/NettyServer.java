@@ -1,4 +1,4 @@
-package com.mng.rpc.server;
+package com.mng.rpc.protocol.telnet;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;

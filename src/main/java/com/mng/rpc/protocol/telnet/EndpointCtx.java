@@ -1,4 +1,4 @@
-package com.mng.rpc.server;
+package com.mng.rpc.protocol.telnet;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

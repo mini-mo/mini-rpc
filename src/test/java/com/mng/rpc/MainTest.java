@@ -1,21 +1,21 @@
 package com.mng.rpc;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class MainTest {
 
-  Main main;
+  ClientTelnetMain clientTelnetMain;
 
   @Before
   public void setup() {
-    main = new Main();
+    clientTelnetMain = new ClientTelnetMain();
   }
 
   @Test
   public void test() {
-    assertTrue(main != null);
+    assertTrue(clientTelnetMain != null);
   }
 }
