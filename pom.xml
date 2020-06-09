@@ -30,6 +30,13 @@
       <version>${ext.netty.version}</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/com.alibaba/hessian-lite -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>hessian-lite</artifactId>
+      <version>3.2.1-fixed-2</version>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -65,4 +72,11 @@
       </plugin>
     </plugins>
   </build>
+
+  <repositories>
+    <repository>
+      <id>handchina</id>
+      <url>http://nexus.saas.hand-china.com/content/repositories/rdc/</url>
+    </repository>
+  </repositories>
 </project>
