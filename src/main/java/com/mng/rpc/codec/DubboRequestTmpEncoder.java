@@ -1,0 +1,51 @@
+package com.mng.rpc.codec;
+
+import com.alibaba.com.caucho.hessian.io.Hessian2Output;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToByteEncoder;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.util.HashMap;
+
+public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
+
+  @Override
+  protected void encode(ChannelHandlerContext ctx, DubboRequest msg, ByteBuf out) throws Exception {
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    Hessian2Output output = new Hessian2Output(baos);
+
+    output.writeString("2.0.2");
+    output.writeString("com.gxk.demo.service.HelloService");
+    output.writeString("0.0.0");
+    output.writeString("hello");
+    output.writeString("Ljava/lang/String;");
+    // args
+    output.writeString("dubbo");
+    HashMap<String, String> map = new HashMap<>();
+    output.writeObject(map);
+    output.flush();
+
+    byte[] bodyBytes = baos.toByteArray();
+    int len = bodyBytes.length;
+
+    ByteArrayOutputStream bao = new ByteArrayOutputStream(16);
+    DataOutputStream dos = new DataOutputStream(bao);
+    dos.writeByte(0xda); // magic high  8 bit
+    dos.writeByte(0xbb); // magic low 8 bit
+    dos.writeByte(0b11000010); // req/resp 1bit, 2 way 1bit, event 1 bit, serialization id 5 bit,
+    dos.writeByte(1); // status 8 bit
+    dos.writeLong(1); // request id 64 bit
+    dos.writeInt(len); // data length 32 bit
+    dos.flush();
+    byte[] bytes = bao.toByteArray();
+
+    int begin = out.writerIndex();
+    out.writeBytes(bytes);
+    out.writeBytes(bodyBytes);
+    int end = out.writerIndex();
+
+    System.out.println("write bytes " + (end - begin));
+  }
+}
