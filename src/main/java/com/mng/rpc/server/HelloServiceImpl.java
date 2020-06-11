@@ -3,8 +3,8 @@ package com.mng.rpc.server;
 public class HelloServiceImpl implements HelloService {
 
   @Override
-  public void hello(String msg) {
-    // do nothing
+  public String hello(String msg) {
+    return "form provider " + msg;
   }
 
   @Override

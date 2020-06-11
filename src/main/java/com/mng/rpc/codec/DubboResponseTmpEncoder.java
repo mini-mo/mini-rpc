@@ -7,33 +7,21 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.HashMap;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
+public class DubboResponseTmpEncoder extends MessageToByteEncoder<DubboResponse> {
 
-  private static final Logger logger = LoggerFactory.getLogger(DubboRequestTmpEncoder.class);
+  private static final Logger logger = LoggerFactory.getLogger(DubboResponseTmpEncoder.class);
 
   @Override
-  protected void encode(ChannelHandlerContext ctx, DubboRequest msg, ByteBuf out) throws Exception {
+  protected void encode(ChannelHandlerContext ctx, DubboResponse msg, ByteBuf out) throws Exception {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     Hessian2Output output = new Hessian2Output(baos);
 
-    String path = Optional.ofNullable(msg.getPath()).orElse("com.gxk.demo.service.HelloService");
-    String method = Optional.ofNullable(msg.getMethod()).orElse("hello");
-    output.writeString("2.0.2");
-    output.writeString(path);
-    output.writeString("0.0.0");
-    output.writeString(method);
-    output.writeString("Ljava/lang/String;");
-    // args
-    String val = msg.getMsg();
-    if (val.trim().isEmpty()) {
-      val = "dubbo";
-    }
-    output.writeString(val);
+    output.writeInt(((byte) 20));
+    output.writeObject(msg.result);
     HashMap<String, String> map = new HashMap<>();
     output.writeObject(map);
     output.flush();
@@ -45,7 +33,7 @@ public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
     DataOutputStream dos = new DataOutputStream(bao);
     dos.writeByte(0xda); // magic high  8 bit
     dos.writeByte(0xbb); // magic low 8 bit
-    dos.writeByte(0b11000010); // req/resp 1bit, 2 way 1bit, event 1 bit, serialization id 5 bit,
+    dos.writeByte(0b00000010); // req/resp 1bit, 2 way 1bit, event 1 bit, serialization id 5 bit,
     dos.writeByte(1); // status 8 bit
     dos.writeLong(1); // request id 64 bit
     dos.writeInt(len); // data length 32 bit
@@ -57,6 +45,6 @@ public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
     out.writeBytes(bodyBytes);
     int end = out.writerIndex();
 
-    logger.info("request encoder write bytes {}", end - begin);
+    logger.info("response encoder write bytes {}", end - begin);
   }
 }

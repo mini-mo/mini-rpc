@@ -9,11 +9,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class DubboResponseTmpDecoder extends ByteToMessageDecoder {
+public class DubboRequestTmpDecoder extends ByteToMessageDecoder {
 
   private DubboObjectDecoder decoder;
 
-  public DubboResponseTmpDecoder() {
+  public DubboRequestTmpDecoder() {
     this.decoder = new DubboObjectDecoder();
   }
 
@@ -32,12 +32,16 @@ public class DubboResponseTmpDecoder extends ByteToMessageDecoder {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(dubboMessage.getBody());
         Hessian2Input input = new Hessian2Input(bais);
+        input.readString();
+        String path = input.readString();
+        input.readString();
+        String method = input.readString();
+        input.readString();
+        Object arg = input.readObject(String.class);
+        input.readObject(Map.class);
 
-        byte flag = (byte) input.readInt();
-        Object resp = input.readObject(String.class);
-        Object ext = input.readObject(Map.class);
+        out.add(new DubboRequest(path, method, arg.toString()));
 
-        out.add(new DubboResponse(resp));
       }
     }
   }

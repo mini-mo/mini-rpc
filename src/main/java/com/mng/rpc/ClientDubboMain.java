@@ -4,7 +4,7 @@ import com.mng.rpc.client.NettyTmpClient;
 import com.mng.rpc.codec.DubboRequest;
 import java.util.Scanner;
 
-public class ClientTmpMain {
+public class ClientDubboMain {
 
   public static void main(String[] args) throws Throwable {
     ClientThread thread = new ClientThread();
@@ -14,7 +14,7 @@ public class ClientTmpMain {
     while (true) {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
-        thread.client.send(new DubboRequest(null, null, line));
+        thread.client.send(new DubboRequest("com.mng.rpc.server.HelloService", "hello", line));
       }
     }
   }
@@ -26,7 +26,7 @@ public class ClientTmpMain {
     @Override
     public void run() {
       try {
-        client = new NettyTmpClient("127.0.0.1", 20880);
+        client = new NettyTmpClient("127.0.0.1", 20888);
         client.doOpen();
         client.doConnect();
       } catch (Throwable e) {
