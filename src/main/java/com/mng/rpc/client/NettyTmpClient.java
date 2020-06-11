@@ -1,6 +1,7 @@
 package com.mng.rpc.client;
 
 import com.mng.rpc.codec.DubboRequestTmpEncoder;
+import com.mng.rpc.codec.DubboResponseTmpDecoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -43,9 +44,9 @@ public class NettyTmpClient {
       @Override
       protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
-            .addLast("logging", new LoggingHandler(LogLevel.INFO))//for debug
-            .addLast("decoder", new DubboRequestTmpEncoder())
-//            .addLast("encoder", new DubboResponseDecoder())
+//            .addLast("logging", new LoggingHandler(LogLevel.INFO))//for debug
+            .addLast("encoder", new DubboRequestTmpEncoder())
+            .addLast("decoder", new DubboResponseTmpDecoder())
 //            .addLast("aggregator", new DubboObjectAggregator(Integer.MAX_VALUE))
             .addLast("handler", nettyClientHandler)
         ;

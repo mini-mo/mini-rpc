@@ -1,29 +1,19 @@
 package com.mng.rpc.client;
 
+import com.mng.rpc.codec.DubboResponse;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
 
 @Sharable
-public class NettyClientTmpHandler extends ChannelDuplexHandler {
+public class NettyClientTmpHandler extends SimpleChannelInboundHandler<DubboResponse> {
 
   private NettyTmpClient client;
 
   public NettyClientTmpHandler(NettyTmpClient client) {
     this.client = client;
-  }
-
-  @Override
-  public void read(ChannelHandlerContext ctx) throws Exception {
-    super.read(ctx);
-  }
-
-  @Override
-  public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-    super.write(ctx, msg, promise);
   }
 
   @Override
@@ -39,5 +29,10 @@ public class NettyClientTmpHandler extends ChannelDuplexHandler {
     } else {
       super.channelRead(ctx, msg);
     }
+  }
+
+  @Override
+  protected void channelRead0(ChannelHandlerContext ctx, DubboResponse msg) throws Exception {
+    System.out.println(msg.result);
   }
 }

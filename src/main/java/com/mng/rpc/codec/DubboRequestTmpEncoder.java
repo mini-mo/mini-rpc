@@ -7,8 +7,12 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
+
+  private static final Logger logger = LoggerFactory.getLogger(DubboRequestTmpEncoder.class);
 
   @Override
   protected void encode(ChannelHandlerContext ctx, DubboRequest msg, ByteBuf out) throws Exception {
@@ -22,7 +26,11 @@ public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
     output.writeString("hello");
     output.writeString("Ljava/lang/String;");
     // args
-    output.writeString("dubbo");
+    String val = msg.getMsg();
+    if (val.trim().isEmpty()) {
+      val = "dubbo";
+    }
+    output.writeString(val);
     HashMap<String, String> map = new HashMap<>();
     output.writeObject(map);
     output.flush();
@@ -46,6 +54,6 @@ public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
     out.writeBytes(bodyBytes);
     int end = out.writerIndex();
 
-    System.out.println("write bytes " + (end - begin));
+    logger.info("request encoder write bytes {}", end - begin);
   }
 }

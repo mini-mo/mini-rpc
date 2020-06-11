@@ -14,9 +14,7 @@ public class ClientTmpMain {
     while (true) {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
-        line += "\r\n";
-        System.out.println(line);
-        thread.client.send(new DubboRequest());
+        thread.client.send(new DubboRequest(line));
       }
     }
   }
