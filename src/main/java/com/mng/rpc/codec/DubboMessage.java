@@ -27,9 +27,13 @@ public class DubboMessage {
     if (length < 4) {
       throw new IllegalStateException();
     }
-    return header[length - 4] << 24
-        | header[length - 3] << 16
-        | header[length - 2] << 8
-        | header[length - 1];
+    return bytes2int(header, 12);
+  }
+
+  public static int bytes2int(byte[] b, int off) {
+    return ((b[off + 3] & 0xFF) << 0) +
+        ((b[off + 2] & 0xFF) << 8) +
+        ((b[off + 1] & 0xFF) << 16) +
+        ((b[off + 0]) << 24);
   }
 }

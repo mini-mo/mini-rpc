@@ -20,7 +20,7 @@ public class DubboResponseTmpEncoder extends MessageToByteEncoder<DubboResponse>
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     Hessian2Output output = new Hessian2Output(baos);
 
-    output.writeInt(((byte) 20));
+    output.writeInt(((byte) 4));
     output.writeObject(msg.result);
     HashMap<String, String> map = new HashMap<>();
     output.writeObject(map);
@@ -34,8 +34,8 @@ public class DubboResponseTmpEncoder extends MessageToByteEncoder<DubboResponse>
     dos.writeByte(0xda); // magic high  8 bit
     dos.writeByte(0xbb); // magic low 8 bit
     dos.writeByte(0b00000010); // req/resp 1bit, 2 way 1bit, event 1 bit, serialization id 5 bit,
-    dos.writeByte(1); // status 8 bit
-    dos.writeLong(1); // request id 64 bit
+    dos.writeByte(20); // status 8 bit
+    dos.writeLong(0); // request id 64 bit
     dos.writeInt(len); // data length 32 bit
     dos.flush();
     byte[] bytes = bao.toByteArray();

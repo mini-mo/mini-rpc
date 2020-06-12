@@ -16,7 +16,7 @@ public class ServerDubboMain {
 
     @Override
     public void run() {
-      server = new NettyServer("127.0.0.1", 20888);
+      server = new NettyServer("192.168.160.55", 20888);
       server.doOpen();
     }
   }
