@@ -4,7 +4,7 @@ public class HelloServiceImpl implements HelloService {
 
   @Override
   public String hello(String msg) {
-    return "form provider " + msg;
+    return "from provider " + msg;
   }
 
   @Override

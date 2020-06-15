@@ -1,20 +1,34 @@
 package com.mng.rpc.codec;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class DubboRequest {
 
-  private String path;
-  private String method;
-  private String msg;
+  private static final AtomicLong CNT = new AtomicLong();
 
-  // com.xxx.Service.hello(Ljava/lang/String;)#0.0.0
-  public DubboRequest(String path, String method, String msg) {
-    this.path = path;
-    this.method = method;
-    this.msg = msg;
+  private final Long id;
+  private final String path;
+  private final String method;
+  private final Object[] args;
+
+  public DubboRequest(String path, String method, Object[] args) {
+    this(CNT.incrementAndGet(), path, method, args);
   }
 
-  public String getMsg() {
-    return msg;
+  public DubboRequest(Long id, String path, String method, Object[] args) {
+    this.id = id;
+    this.path = path;
+    this.method = method;
+    this.args = args;
+  }
+
+  public static DubboRequest decode(Long id, String path, String method, Object[] args) {
+    DubboRequest request = new DubboRequest(id, path, method, args);
+    return request;
+  }
+
+  public Long getId() {
+    return this.id;
   }
 
   public String getPath() {
@@ -23,5 +37,9 @@ public class DubboRequest {
 
   public String getMethod() {
     return method;
+  }
+
+  public Object[] getArgs() {
+    return args;
   }
 }

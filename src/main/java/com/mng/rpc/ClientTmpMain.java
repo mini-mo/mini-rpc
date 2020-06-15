@@ -14,7 +14,7 @@ public class ClientTmpMain {
     while (true) {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
-        thread.client.send(new DubboRequest(null, null, line));
+        thread.client.send(new DubboRequest(null, null, new Object[]{line}));
       }
     }
   }

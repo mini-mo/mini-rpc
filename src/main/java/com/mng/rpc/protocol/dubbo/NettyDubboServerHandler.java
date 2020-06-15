@@ -49,7 +49,7 @@ public class NettyDubboServerHandler extends SimpleChannelInboundHandler<DubboRe
       throw new IllegalStateException();
     }
 
-    Object result = method.invoke(LocalRegistry.getInstance().get(clazz), msg.getMsg());
-    ctx.writeAndFlush(new DubboResponse(result));
+    Object result = method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
+    ctx.writeAndFlush(new DubboResponse(msg.getId(), result));
   }
 }

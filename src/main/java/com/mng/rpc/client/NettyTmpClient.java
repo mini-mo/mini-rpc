@@ -11,8 +11,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 import java.net.InetSocketAddress;
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
@@ -76,6 +74,7 @@ public class NettyTmpClient {
   }
 
   public void send(Object msg) {
+
     ChannelFuture future = channel.writeAndFlush(msg);
     boolean ret = future.awaitUninterruptibly(5000, TimeUnit.MILLISECONDS);
     if (ret && future.isSuccess()) {

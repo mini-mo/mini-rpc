@@ -35,7 +35,7 @@ public class DubboResponseTmpEncoder extends MessageToByteEncoder<DubboResponse>
     dos.writeByte(0xbb); // magic low 8 bit
     dos.writeByte(0b00000010); // req/resp 1bit, 2 way 1bit, event 1 bit, serialization id 5 bit,
     dos.writeByte(20); // status 8 bit
-    dos.writeLong(0); // request id 64 bit
+    dos.writeLong(msg.id); // request id 64 bit
     dos.writeInt(len); // data length 32 bit
     dos.flush();
     byte[] bytes = bao.toByteArray();

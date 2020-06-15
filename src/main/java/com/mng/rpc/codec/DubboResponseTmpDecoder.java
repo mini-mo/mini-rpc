@@ -37,7 +37,7 @@ public class DubboResponseTmpDecoder extends ByteToMessageDecoder {
         Object resp = input.readObject(String.class);
         Object ext = input.readObject(Map.class);
 
-        out.add(new DubboResponse(resp));
+        out.add(new DubboResponse(dubboMessage.getId(), resp));
       }
     }
   }

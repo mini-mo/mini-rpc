@@ -14,7 +14,7 @@ public class ClientDubboMain {
     while (true) {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
-        thread.client.send(new DubboRequest("com.mng.rpc.server.HelloService", "hello", line));
+        thread.client.send(new DubboRequest("com.mng.rpc.server.HelloService", "hello", new Object[]{line}));
       }
     }
   }

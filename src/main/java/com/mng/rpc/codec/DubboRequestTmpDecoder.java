@@ -40,8 +40,8 @@ public class DubboRequestTmpDecoder extends ByteToMessageDecoder {
         Object arg = input.readObject(String.class);
         input.readObject(Map.class);
 
-        out.add(new DubboRequest(path, method, arg.toString()));
-
+        Long id = dubboMessage.getId();
+        out.add(DubboRequest.decode(id, path, method, new Object[]{arg}));
       }
     }
   }
