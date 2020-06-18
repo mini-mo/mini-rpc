@@ -36,12 +36,16 @@ public class DubboRequestTmpDecoder extends ByteToMessageDecoder {
         String path = input.readString();
         input.readString();
         String method = input.readString();
-        input.readString();
-        Object arg = input.readObject(String.class);
+        String descriptor = input.readString();
+        String[] split = descriptor.split(";");
+        Object[] args = new Object[split.length];
+        for (int i = 0; i < split.length; i++) {
+          args[i] = input.readObject(String.class);
+        }
         input.readObject(Map.class);
 
         Long id = dubboMessage.getId();
-        out.add(DubboRequest.decode(id, path, method, new Object[]{arg}));
+        out.add(DubboRequest.decode(id, path, method, descriptor, args));
       }
     }
   }

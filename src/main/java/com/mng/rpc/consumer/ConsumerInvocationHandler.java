@@ -20,7 +20,15 @@ public class ConsumerInvocationHandler implements InvocationHandler {
     Class<?> returnType = method.getReturnType();
     Class<?>[] parameterTypes = method.getParameterTypes();
     Class<?> declaringClass = method.getDeclaringClass();
-    DubboRequest request = new DubboRequest("com.mng.rpc.server.HelloService", "hello", args);
+
+    String path = declaringClass.getName();
+    StringBuilder sb = new StringBuilder();
+    for (Class<?> parameterType : parameterTypes) {
+      sb.append("L").append(parameterType.getName().replace('.', '/')).append(";");
+    }
+    String desc = sb.toString();
+
+    DubboRequest request = new DubboRequest(path, name, desc, args);
     CompletableFuture<Object> future = CTX.newFuture(request);
     try {
       client.send(request);
