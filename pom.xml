@@ -7,71 +7,52 @@
   <groupId>com.mng.rpc</groupId>
   <artifactId>mini-rpc</artifactId>
   <version>0.0.1</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>rpc-core</module>
+    <module>rpc-example</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <main.class>com.mng.rpc.ClientTelnetMain</main.class>
 
     <ext.netty.version>4.1.50.Final</ext.netty.version>
+    <ext.hessian-lite.version>3.2.1-fixed-2</ext.hessian-lite.version>
+    <ext.junit.version>4.12</ext.junit.version>
+    <ext.slf4j.version>1.7.12</ext.slf4j.version>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.7.12</version>
-    </dependency>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${ext.slf4j.version}</version>
+      </dependency>
 
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-all</artifactId>
-      <version>${ext.netty.version}</version>
-    </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>${ext.netty.version}</version>
+      </dependency>
 
-    <!-- https://mvnrepository.com/artifact/com.alibaba/hessian-lite -->
-    <dependency>
-      <groupId>com.alibaba</groupId>
-      <artifactId>hessian-lite</artifactId>
-      <version>3.2.1-fixed-2</version>
-    </dependency>
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>hessian-lite</artifactId>
+        <version>${ext.hessian-lite.version}</version>
+      </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <finalName>mini-rpc</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <minimizeJar>true</minimizeJar>
-              <createDependencyReducedPom>false</createDependencyReducedPom>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>${main.class}</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${ext.junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <repositories>
     <repository>

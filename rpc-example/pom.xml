@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.mng.rpc</groupId>
+    <artifactId>mini-rpc</artifactId>
+    <version>0.0.1</version>
+  </parent>
+  <artifactId>rpc-example</artifactId>
+
+  <packaging>pom</packaging>
+
+  <properties>
+    <ext.dubbo.version>2.7.4.1</ext.dubbo.version>
+    <ext.curator.version>4.0.1</ext.curator.version>
+    <ext.zookeeper.version>3.4.13</ext.zookeeper.version>
+
+    <ext.jmh.version>1.23</ext.jmh.version>
+  </properties>
+
+  <modules>
+    <module>rpc-api-demo</module>
+    <module>rpc-provider-demo</module>
+    <module>rpc-consumer-demo</module>
+    <module>rpc-dubbo-provider-demo</module>
+    <module>rpc-dubbo-consumer-demo</module>
+  </modules>
+
+</project>

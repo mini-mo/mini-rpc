@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.mng.rpc</groupId>
+    <artifactId>mini-rpc</artifactId>
+    <version>0.0.1</version>
+  </parent>
+
+  <artifactId>rpc-core</artifactId>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.12</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <version>${ext.netty.version}</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.alibaba/hessian-lite -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>hessian-lite</artifactId>
+      <version>3.2.1-fixed-2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>mini-rpc</finalName>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>handchina</id>
+      <url>http://nexus.saas.hand-china.com/content/repositories/rdc/</url>
+    </repository>
+  </repositories>
+</project>
