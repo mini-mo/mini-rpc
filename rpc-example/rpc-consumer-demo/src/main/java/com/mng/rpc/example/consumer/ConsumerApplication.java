@@ -22,7 +22,7 @@ public class ConsumerApplication {
         if (line.isEmpty()) {
           line = "mini-rpc";
         }
-        String test = helloService.format("ret %s", line);
+        String test = helloService.add("ret %d", line.length(), line.length() + 1);
         System.out.println(test);
       }
     }

@@ -27,7 +27,7 @@ public class DubboRequestTmpEncoder extends MessageToByteEncoder<DubboRequest> {
     output.writeString(path);
     output.writeString("0.0.0");
     output.writeString(method);
-    output.writeString(request.getMethodParameterDescriptor());
+    output.writeString(request.getDesc());
     // args
     for (Object arg : request.getArgs()) {
       output.writeObject(arg);

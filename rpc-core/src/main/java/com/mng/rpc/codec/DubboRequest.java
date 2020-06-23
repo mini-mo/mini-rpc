@@ -9,25 +9,25 @@ public class DubboRequest {
   private final Long id;
   private final String path;
   private final String method;
-  private final String methodParameterDescriptor;
+  private final String desc;
   private final Object[] args;
 
-  public DubboRequest(String path, String method, String methodParameterDescriptor, Object[] args) {
-    this(CNT.incrementAndGet(), path, method, methodParameterDescriptor, args);
+  public DubboRequest(String path, String method, String desc, Object[] args) {
+    this(CNT.incrementAndGet(), path, method, desc, args);
   }
 
-  public DubboRequest(Long id, String path, String method, String methodParameterDescriptor,
+  public DubboRequest(Long id, String path, String method, String desc,
       Object[] args) {
     this.id = id;
     this.path = path;
     this.method = method;
-    this.methodParameterDescriptor = methodParameterDescriptor;
+    this.desc = desc;
     this.args = args;
   }
 
   public static DubboRequest decode(Long id, String path, String method,
-      String methodParameterDescriptor, Object[] args) {
-    DubboRequest request = new DubboRequest(id, path, method, methodParameterDescriptor, args);
+      String desc, Object[] args) {
+    DubboRequest request = new DubboRequest(id, path, method, desc, args);
     return request;
   }
 
@@ -43,8 +43,8 @@ public class DubboRequest {
     return method;
   }
 
-  public String getMethodParameterDescriptor() {
-    return methodParameterDescriptor;
+  public String getDesc() {
+    return desc;
   }
 
   public Object[] getArgs() {

@@ -1,6 +1,7 @@
 package com.mng.rpc.codec;
 
 import com.alibaba.com.caucho.hessian.io.Hessian2Input;
+import com.mng.rpc.util.Utils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -37,10 +38,10 @@ public class DubboRequestTmpDecoder extends ByteToMessageDecoder {
         input.readString();
         String method = input.readString();
         String descriptor = input.readString();
-        String[] split = descriptor.split(";");
-        Object[] args = new Object[split.length];
-        for (int i = 0; i < split.length; i++) {
-          args[i] = input.readObject(String.class);
+        Class<?>[] pts = Utils.desc2classArray(descriptor);
+        Object[] args = new Object[pts.length];
+        for (int i = 0; i < pts.length; i++) {
+          args[i] = input.readObject(pts[i]);
         }
         input.readObject(Map.class);
 

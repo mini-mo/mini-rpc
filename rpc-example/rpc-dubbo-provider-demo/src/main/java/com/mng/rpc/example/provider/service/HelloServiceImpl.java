@@ -14,4 +14,8 @@ public class HelloServiceImpl implements HelloService {
     return String.format(format, name);
   }
 
+  @Override
+  public String add(String format, int x, int y) {
+    return String.format(format, x + y);
+  }
 }

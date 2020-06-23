@@ -3,6 +3,7 @@ package com.mng.rpc.proxy;
 import com.mng.rpc.client.NettyTmpClient;
 import com.mng.rpc.codec.DubboRequest;
 import com.mng.rpc.consumer.CTX;
+import com.mng.rpc.util.Utils;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
@@ -20,14 +21,10 @@ public class ConsumerInvocationHandler implements InvocationHandler {
     String name = method.getName();
     Class<?> returnType = method.getReturnType();
     Class<?>[] parameterTypes = method.getParameterTypes();
-    Class<?> declaringClass = method.getDeclaringClass();
 
+    Class<?> declaringClass = method.getDeclaringClass();
     String path = declaringClass.getName();
-    StringBuilder sb = new StringBuilder();
-    for (Class<?> parameterType : parameterTypes) {
-      sb.append("L").append(parameterType.getName().replace('.', '/')).append(";");
-    }
-    String desc = sb.toString();
+    String desc = Utils.getDesc(parameterTypes);
 
     DubboRequest request = new DubboRequest(path, name, desc, args);
     CompletableFuture<Object> future = CTX.newFuture(request);
