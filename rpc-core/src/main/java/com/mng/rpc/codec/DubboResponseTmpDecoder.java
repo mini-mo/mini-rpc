@@ -1,6 +1,7 @@
 package com.mng.rpc.codec;
 
 import com.alibaba.com.caucho.hessian.io.Hessian2Input;
+import com.mng.rpc.consumer.CTX;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -34,9 +35,15 @@ public class DubboResponseTmpDecoder extends ByteToMessageDecoder {
         Hessian2Input input = new Hessian2Input(bais);
 
         byte flag = (byte) input.readInt();
-        Object resp = input.readObject(String.class);
-        Object ext = input.readObject(Map.class);
+        Class<?> returnType = CTX.getReturnType(dubboMessage.getId());
+        Object resp = null;
+        if (returnType == null) {
+          resp = input.readObject();
+        } else {
+          resp = input.readObject(returnType);
+        }
 
+        Object ext = input.readObject(Map.class);
         out.add(new DubboResponse(dubboMessage.getId(), resp));
       }
     }

@@ -26,7 +26,7 @@ public class ConsumerInvocationHandler implements InvocationHandler {
     String path = declaringClass.getName();
     String desc = Utils.getDesc(parameterTypes);
 
-    DubboRequest request = new DubboRequest(path, name, desc, args);
+    DubboRequest request = new DubboRequest(path, name, returnType, desc, args);
     CompletableFuture<Object> future = CTX.newFuture(request);
     try {
       client.send(request);

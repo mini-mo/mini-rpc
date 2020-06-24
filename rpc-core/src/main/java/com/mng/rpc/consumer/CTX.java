@@ -10,12 +10,12 @@ import java.util.concurrent.Executors;
 
 public abstract class CTX {
 
-  private static final Map<Long, CompletableFuture<Object>> FUTURES = new ConcurrentHashMap<>();
+  private static final Map<Long, RpcCompletableFuture<Object>> FUTURES = new ConcurrentHashMap<>();
 
   private static Executor executor = Executors.newSingleThreadExecutor();
 
   public static CompletableFuture<Object> newFuture(DubboRequest request) {
-    CompletableFuture<Object> future = new CompletableFuture<>();
+    RpcCompletableFuture future = new RpcCompletableFuture(request);
     FUTURES.put(request.getId(), future);
     return future;
   }
@@ -24,9 +24,17 @@ public abstract class CTX {
     FUTURES.remove(id);
   }
 
+  public static Class<?> getReturnType(Long id) {
+    RpcCompletableFuture<Object> future = FUTURES.get(id);
+    if (future == null) {
+      return null;
+    }
+    return future.getRequest().getReturnType();
+  }
+
   public static void release(DubboResponse msg) {
-    CompletableFuture<Object> future = FUTURES.get(msg.id);
-    future.complete(((String) msg.result));
+    RpcCompletableFuture<Object> future = FUTURES.get(msg.id);
+    future.complete(msg.result);
     FUTURES.remove(msg.id);
   }
 }
