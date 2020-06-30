@@ -8,8 +8,17 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class NettyDubboServerHandler extends SimpleChannelInboundHandler<DubboRequest> {
+
+  private ExecutorService pool = new ThreadPoolExecutor(10, 10,
+      0L, TimeUnit.MILLISECONDS,
+      new SynchronousQueue<>());
 
   public NettyDubboServerHandler(NettyServer nettyServer) {
   }
@@ -36,7 +45,20 @@ public class NettyDubboServerHandler extends SimpleChannelInboundHandler<DubboRe
       throw new IllegalStateException();
     }
 
-    Object result = method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
-    ctx.writeAndFlush(new DubboResponse(msg.getId(), result));
+    // 走业务线程池
+    CompletableFuture<Void> future = CompletableFuture.supplyAsync(
+        () -> {
+          try {
+            return method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
+          } catch (Exception e) {
+            throw new IllegalStateException();
+          }
+        }, pool)
+        .exceptionally(ex -> null)
+        .thenAccept(result -> ctx.writeAndFlush(new DubboResponse(msg.getId(), result)));
+
+    // 加了业务线程池。。。吞吐量下降 15%
+//    Object result = method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
+//    ctx.writeAndFlush(new DubboResponse(msg.getId(), result));
   }
 }

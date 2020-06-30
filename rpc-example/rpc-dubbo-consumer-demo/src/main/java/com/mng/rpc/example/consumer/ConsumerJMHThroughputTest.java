@@ -57,7 +57,7 @@ public class ConsumerJMHThroughputTest {
   }
 
   @Benchmark
-  public void testDubboHello(ConsumerJMHSampleTimeTest.MyState state) {
+  public void testDubboHello(MyState state) {
     for (int i = 0; i < 100; i++) {
       String msg = "dubbo" + i;
       String message = state.s1.hello(msg);
@@ -65,7 +65,7 @@ public class ConsumerJMHThroughputTest {
   }
 
   @Benchmark
-  public void testDubboFormat(ConsumerJMHSampleTimeTest.MyState state) {
+  public void testDubboFormat(MyState state) {
     for (int i = 0; i < 100; i++) {
       String msg = "dubbo" + i;
       String message = state.s1.format("hhh %s", msg);
@@ -73,7 +73,7 @@ public class ConsumerJMHThroughputTest {
   }
 
   @Benchmark
-  public void testRpcHello(ConsumerJMHSampleTimeTest.MyState state) {
+  public void testRpcHello(MyState state) {
     for (int i = 0; i < 100; i++) {
       String msg = "dubbo" + i;
       String message = state.s2.hello(msg);
@@ -81,7 +81,7 @@ public class ConsumerJMHThroughputTest {
   }
 
   @Benchmark
-  public void testRpcFormat(ConsumerJMHSampleTimeTest.MyState state) {
+  public void testRpcFormat(MyState state) {
     for (int i = 0; i < 100; i++) {
       String msg = "dubbo" + i;
       String message = state.s2.format("hhh %s", msg);

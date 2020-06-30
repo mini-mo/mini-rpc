@@ -131,7 +131,7 @@ public class DubboObjectDecoder extends ByteToMessageDecoder {
           reset();
           return;
         }
-        if (need < readableBytes) {
+        if (need > readableBytes) {
           buffer.readBytes(body, contentLen, readableBytes);
           contentLen += need;
           return;

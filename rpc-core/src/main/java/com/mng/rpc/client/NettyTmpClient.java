@@ -2,6 +2,7 @@ package com.mng.rpc.client;
 
 import com.mng.rpc.codec.DubboRequestTmpEncoder;
 import com.mng.rpc.codec.DubboResponseTmpDecoder;
+import com.mng.rpc.consumer.CTX;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -93,5 +94,6 @@ public class NettyTmpClient {
 
   public void shutdown() {
     group.shutdownGracefully();
+    CTX.shutdown();
   }
 }
