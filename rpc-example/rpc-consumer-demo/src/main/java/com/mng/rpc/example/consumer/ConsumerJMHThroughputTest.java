@@ -5,8 +5,7 @@ import com.mng.rpc.example.api.HelloService;
 import com.mng.rpc.proxy.ConsumerInvocationHandler;
 import com.mng.rpc.proxy.ProxyFactory;
 import java.util.concurrent.TimeUnit;
-import org.apache.dubbo.config.ApplicationConfig;
-import org.apache.dubbo.config.ReferenceConfig;
+import java.util.concurrent.atomic.AtomicReference;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -16,29 +15,20 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
-@BenchmarkMode(Mode.SampleTime)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@BenchmarkMode(Mode.Throughput)
+@OutputTimeUnit(TimeUnit.SECONDS)
 @State(Scope.Benchmark)
-public class ConsumerJMHSampleTimeTest {
+public class ConsumerJMHThroughputTest {
 
   @State(Scope.Benchmark)
   public static class MyState {
 
-    HelloService s1;
     HelloService s2;
+
     NettyTmpClient client;
 
     @Setup
     public void setup() {
-      ReferenceConfig<HelloService> reference = new ReferenceConfig<>();
-      ApplicationConfig application = new ApplicationConfig("dubbo-demo-api-consumer");
-      application.setQosEnable(false);
-
-      reference.setApplication(application);
-      reference.setInterface(HelloService.class);
-      reference.setUrl("dubbo://127.0.0.1:20880");
-      s1 = reference.get();
-
       try {
         client = new NettyTmpClient("127.0.0.1", 20888);
         client.doOpen();
@@ -52,22 +42,6 @@ public class ConsumerJMHSampleTimeTest {
     @TearDown
     public void tearDown() {
       client.shutdown();
-    }
-  }
-
-  @Benchmark
-  public void testDubboHello(MyState state) {
-    for (int i = 0; i < 100; i++) {
-      String msg = "dubbo" + i;
-      String message = state.s1.hello(msg);
-    }
-  }
-
-  @Benchmark
-  public void testDubboFormat(MyState state) {
-    for (int i = 0; i < 100; i++) {
-      String msg = "dubbo" + i;
-      String message = state.s1.format("hhh %s", msg);
     }
   }
 
@@ -91,10 +65,8 @@ public class ConsumerJMHSampleTimeTest {
   public void testRpcFormat2(MyState state) {
     for (int i = 0; i < 100; i++) {
       String msg = "dubbo" + i;
-      state.s2.format2("hhh %s", msg).thenAccept(it -> {
-        if (it != null) {
-        }
-      });
+      AtomicReference<String> message = new AtomicReference<>();
+      state.s2.format2("hhh %s", msg).thenAccept(message::set);
     }
   }
 }

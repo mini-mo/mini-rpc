@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class DubboResponseTmpDecoder extends ByteToMessageDecoder {
 
@@ -38,6 +39,8 @@ public class DubboResponseTmpDecoder extends ByteToMessageDecoder {
         Class<?> returnType = CTX.getReturnType(dubboMessage.getId());
         Object resp = null;
         if (returnType == null) {
+          resp = input.readObject();
+        } else if (returnType.equals(CompletableFuture.class)) {
           resp = input.readObject();
         } else {
           resp = input.readObject(returnType);

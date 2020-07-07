@@ -39,6 +39,11 @@ public class ConsumerInvocationHandler implements InvocationHandler {
       CTX.removeFuture(request.getId());
       future.cancel(true);
     }
+
+    if (request.getReturnType().equals(CompletableFuture.class)) {
+      return future;
+    }
+
     try {
       return future.get();
     } catch (Exception e) {

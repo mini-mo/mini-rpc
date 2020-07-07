@@ -41,7 +41,7 @@ public class ConsumerJMHThroughputTest {
       s1 = reference.get();
 
       try {
-        client = new NettyTmpClient("127.0.0.1", 20888);
+        client = new NettyTmpClient("192.168.160.55", 20888);
         client.doOpen();
         client.doConnect();
         s2 = ProxyFactory.newProxy(HelloService.class, new ConsumerInvocationHandler(client));
@@ -87,4 +87,5 @@ public class ConsumerJMHThroughputTest {
       String message = state.s2.format("hhh %s", msg);
     }
   }
+
 }

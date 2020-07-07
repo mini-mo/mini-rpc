@@ -100,7 +100,7 @@ public class DubboObjectDecoder extends ByteToMessageDecoder {
           }
 
           // 不足
-          if (dataLen < readableBytes) {
+          if (dataLen > readableBytes) {
             byte[] bytes = new byte[dataLen];
             buffer.readBytes(bytes, 0, readableBytes);
             this.dubboMessage.setBody(bytes);

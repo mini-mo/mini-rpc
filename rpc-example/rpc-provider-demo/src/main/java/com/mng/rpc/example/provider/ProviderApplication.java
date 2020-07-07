@@ -25,6 +25,8 @@ public class ProviderApplication {
 
     ServerThread thread = new ServerThread();
     thread.start();
+
+    System.out.println("provider done");
   }
 
   static class ServerThread extends Thread {

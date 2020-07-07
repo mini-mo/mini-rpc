@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 public class NettyDubboServerHandler extends SimpleChannelInboundHandler<DubboRequest> {
 
-  private ExecutorService pool = new ThreadPoolExecutor(10, 10,
-      0L, TimeUnit.MILLISECONDS,
-      new SynchronousQueue<>());
+//  private ExecutorService pool = new ThreadPoolExecutor(200, 200,
+//      0L, TimeUnit.MILLISECONDS,
+//      new SynchronousQueue<>());
 
   public NettyDubboServerHandler(NettyServer nettyServer) {
   }
@@ -46,19 +46,29 @@ public class NettyDubboServerHandler extends SimpleChannelInboundHandler<DubboRe
     }
 
     // 走业务线程池
-    CompletableFuture<Void> future = CompletableFuture.supplyAsync(
-        () -> {
-          try {
-            return method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
-          } catch (Exception e) {
-            throw new IllegalStateException();
-          }
-        }, pool)
-        .exceptionally(ex -> null)
-        .thenAccept(result -> ctx.writeAndFlush(new DubboResponse(msg.getId(), result)));
+//    CompletableFuture<Void> future = CompletableFuture.supplyAsync(
+//        () -> {
+//          try {
+//            return method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
+//          } catch (Exception e) {
+//            throw new IllegalStateException();
+//          }
+//        }, pool)
+//        .exceptionally(ex -> null)
+//        .thenAccept(result -> {
+//          if (result instanceof CompletableFuture) {
+//            ((CompletableFuture) result).thenAccept(it -> ctx.writeAndFlush(new DubboResponse(msg.getId(), it)));
+//          } else {
+//            ctx.writeAndFlush(new DubboResponse(msg.getId(), result));
+//          }
+//        });
 
     // 加了业务线程池。。。吞吐量下降 15%
-//    Object result = method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
-//    ctx.writeAndFlush(new DubboResponse(msg.getId(), result));
+    Object result = method.invoke(LocalRegistry.getInstance().get(clazz), msg.getArgs());
+    if (result instanceof CompletableFuture) {
+      ((CompletableFuture) result).thenAccept(it -> ctx.writeAndFlush(new DubboResponse(msg.getId(), it)));
+    } else {
+      ctx.writeAndFlush(new DubboResponse(msg.getId(), result));
+    }
   }
 }
