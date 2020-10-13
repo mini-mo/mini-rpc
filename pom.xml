@@ -21,7 +21,7 @@
 
     <ext.netty.version>4.1.50.Final</ext.netty.version>
     <ext.hessian-lite.version>3.2.1-fixed-2</ext.hessian-lite.version>
-    <ext.junit.version>4.12</ext.junit.version>
+    <ext.junit.version>4.13.1</ext.junit.version>
     <ext.slf4j.version>1.7.12</ext.slf4j.version>
   </properties>
 
